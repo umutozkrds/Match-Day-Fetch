@@ -9,10 +9,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 import time
 import pickle
+from favori import *
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 driver.get("https://www.sofascore.com/tr/")
-time.sleep(10)
 
 matches = driver.find_elements(By.XPATH, '//div[contains(@class, "jtsXPN")]')
 
@@ -36,6 +36,5 @@ def find_match(teams):
     if not found:
         print("Belirtilen takım(lar) için bugün maç bulunamadı.")
 
-
-find_match(["Fenerbahçe", "Göztepe"])
+find_match(favorilerim())
 driver.close()
