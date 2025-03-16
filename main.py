@@ -10,10 +10,14 @@ from selenium.common.exceptions import NoSuchElementException
 import time
 
 def find_matches_for_teams(teams):
+
+    options = Options()
+    options.add_argument("--headless")  # Arka planda çalıştırmak için (isteğe bağlı)
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
     # Selenium ile tarayıcıyı başlat
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     driver.get("https://www.sofascore.com/tr/")
-    time.sleep(10)  # Sayfanın yüklenmesi için bekleme
 
     matches = driver.find_elements(By.XPATH, '//div[contains(@class, "jtsXPN")]')
 

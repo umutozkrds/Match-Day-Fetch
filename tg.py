@@ -1,10 +1,14 @@
 import json
+from dotenv import load_dotenv
+import os
 from typing import Final
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 from main import *
 
-TOKEN: Final = "8196236979:AAHv0bCn9LH3PGa5LF8rmE7rb8MXqv4rsMU"
+
+load_dotenv()
+TOKEN: Final = os.getenv("TOKEN")
 DATA_FILE = "favori.json"  # Favori takımların saklanacağı dosya
 
 
@@ -109,7 +113,7 @@ async def find_match(update: Update, context: ContextTypes.DEFAULT_TYPE):
     found_matches = find_matches_for_teams(teams)
 
     if found_matches:
-        await update.message.reply_text(f"Bugün oynanan maçlar:\n" + "\n".join(found_matches))
+        await update.message.reply_text(f"Bugün oynanacak maçlar:\n" + "\n".join(found_matches))
     else:
         await update.message.reply_text("Belirtilen takım(lar) için bugün maç bulunamadı.")
 if __name__ == "__main__":
