@@ -8,33 +8,28 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 import time
-import pickle
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-driver.get("https://www.sofascore.com/tr/")
+def find_matches_for_teams(teams):
+    # Selenium ile tarayıcıyı başlat
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    driver.get("https://www.sofascore.com/tr/")
+    time.sleep(10)  # Sayfanın yüklenmesi için bekleme
 
-matches = driver.find_elements(By.XPATH, '//div[contains(@class, "jtsXPN")]')
+    matches = driver.find_elements(By.XPATH, '//div[contains(@class, "jtsXPN")]')
 
-
-def find_match(teams):
-
-
-    found = False  # Maç bulundu mu?
+    found_matches = []
     for match in matches:
         try:
             left_team = match.find_element(By.XPATH, './/div[@data-testid="left_team"]//bdi').text
             right_team = match.find_element(By.XPATH, './/div[@data-testid="right_team"]//bdi').text
 
             if left_team in teams or right_team in teams:
-                print(f"Bugün günlerden {left_team if left_team in teams else right_team} Maç: {left_team} - {right_team}")
-                found = True
-
+                found_matches.append(f"{left_team} - {right_team}")
         except NoSuchElementException:
             continue  # Eğer bir takım bulunamazsa devam et
     
-    if not found:
-        print("Belirtilen takım(lar) için bugün maç bulunamadı.")
-
-driver.close()
+    driver.quit()  # Tarayıcıyı kapat
+    
+    return found_matches
 
 #8196236979:AAHv0bCn9LH3PGa5LF8rmE7rb8MXqv4rsMU

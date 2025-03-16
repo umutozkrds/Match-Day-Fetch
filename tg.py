@@ -2,6 +2,7 @@ import json
 from typing import Final
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
+from main import *
 
 TOKEN: Final = "8196236979:AAHv0bCn9LH3PGa5LF8rmE7rb8MXqv4rsMU"
 DATA_FILE = "favori.json"  # Favori takımların saklanacağı dosya
@@ -100,6 +101,17 @@ async def list_favorites(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ Henüz favori takım eklenmemiş.")
 
 
+
+async def find_match(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    teams = load_favorites()
+    
+    # Selenium fonksiyonunu çağırarak maçları al
+    found_matches = find_matches_for_teams(teams)
+
+    if found_matches:
+        await update.message.reply_text(f"Bugün oynanan maçlar:\n" + "\n".join(found_matches))
+    else:
+        await update.message.reply_text("Belirtilen takım(lar) için bugün maç bulunamadı.")
 if __name__ == "__main__":
     print("Starting bot..")
     app = Application.builder().token(TOKEN).build()
@@ -109,6 +121,8 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("ekle", add_favorite))
     app.add_handler(CommandHandler("sil", remove_favorite))
     app.add_handler(CommandHandler("liste", list_favorites))
+    app.add_handler(CommandHandler("maclar", find_match))
+    
 
     print("Polling..")
     app.run_polling(poll_interval=3)
